@@ -286,3 +286,91 @@ set_property(TARGET utox PROPERTY C_STANDARD 99)
 if(UNIX)
 	install(TARGETS utox RUNTIME DESTINATION "bin")
 endif()
+
+
+#
+# Tests
+#
+if(UNIX) # no idea whether or how this works on other platforms
+    enable_testing()
+
+
+    add_library(utoxNATIVETEST STATIC
+            src/xlib/audio.c
+            src/xlib/dbus.c
+            src/xlib/dbus.h
+            src/xlib/drawing.c
+            src/xlib/event.c
+            src/posix/filesys.c
+            src/xlib/freetype.c
+            src/xlib/freetype.h
+            src/xlib/gtk.c
+            src/xlib/keysym2ucs.h
+#            src/xlib/main.c
+            src/xlib/main.h
+            src/xlib/mmenu.c
+            src/xlib/mmenu.h
+            src/xlib/v4l.c
+            src/xlib/video.c
+            src/xlib/filesys.c
+            )
+
+    target_link_libraries(utoxNATIVETEST icon v4lconvert X11 Xext Xrender fontconfig freetype resolv dl )
+
+
+    add_executable(test-tox
+        tests/tox_test.c
+
+        src/avatar.c
+        src/avatar.h
+        src/chatlog.c
+        src/chatlog.h
+        src/command_funcs.c
+        src/command_funcs.h
+        src/commands.c
+        src/commands.h
+        src/devices.c
+        src/devices.h
+        src/dns.c
+        src/dns.h
+        src/file_transfers.c
+        src/file_transfers.h
+        src/flist.c
+        src/flist.h
+        src/friend.c
+        src/friend.h
+        src/groups.c
+        src/groups.h
+        src/inline_video.c
+        src/inline_video.h
+        src/main.c
+        src/main.h
+        src/main_native.h
+        src/messages.c
+        src/messages.h
+        src/sized_string.h
+        src/stb_image.h
+        src/stb_image_write.h
+        src/theme.c
+        src/theme.h
+        src/theme_tables.h
+        src/tox.c
+        src/tox.h
+        src/utox.c
+        src/utox.h
+        src/tox_callbacks.c
+        src/tox_callbacks.h
+        src/ui.c
+        src/ui.h
+        src/ui_i18n.c
+        src/ui_i18n.h
+        src/util.c
+        src/util.h
+    )
+    target_link_libraries(test-tox
+            utoxAV        utoxNATIVETEST      utoxUI
+            ${TOX_LIBS}   ${LIBRARIES}
+            sodium        pthread     m   vpx )
+    add_test(NAME test-tox COMMAND test-tox)
+
+endif()
